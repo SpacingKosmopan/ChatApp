@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getUsers } from "./api/users";
+import UserList from "./components/UserList.tsx";
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -10,7 +11,7 @@ function App() {
 
   return (
     <div>
-      Users ({users.length}): {JSON.stringify(users)}
+      <UserList users={users} />
     </div>
   );
 }
