@@ -17,7 +17,7 @@ export const getUsers = (req: Request, res: Response) => {
 
 export const createUser = (req: Request, res: Response) => {
   const name: string = req.body.name;
-  if (name === null || name === "") {
+  if (!name) {
     console.warn("No user name");
     return;
   }

@@ -28,8 +28,9 @@ const chats: Chat[] = [
 export const getMessages = (req: Request, res: Response) => {
   const chatId: number = Number(req.query.chatId);
   if (!Number.isFinite(chatId)) {
-    alert("Wrong id");
-    return;
+    return res.status(400).json({
+      error: "Wrong id",
+    });
   }
   const chatMessages = chats.filter((chat) => chat.id === chatId);
   res.json(chatMessages);

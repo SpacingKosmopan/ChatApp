@@ -8,6 +8,7 @@ export default function NewUser() {
 
     try {
       const res = await fetch("/api/users", {
+        // POST - create user
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: username.trim() }),

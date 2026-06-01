@@ -3,11 +3,7 @@ export async function getUsers() {
   return res.json();
 }
 
-export async function getMessages() {
-  const res = await fetch("/api/chats", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id: 0 }),
-  });
+export async function getMessages(chatId: number) {
+  const res = await fetch(`/api/chats?chatId=${chatId}`);
   return res.json();
 }

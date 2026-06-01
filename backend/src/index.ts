@@ -1,6 +1,6 @@
 import express from "express";
 import usersRouter from "./routes/users";
-import chatsRouter from "./routes/users";
+import chatsRouter from "./routes/chats";
 
 const app = express();
 
