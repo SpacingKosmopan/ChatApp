@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getUsers, getChat } from "./api/gets.ts";
+import { getUsers, getChat, getUser } from "./api/gets.ts";
 import NewUser from "./components/NewUser.tsx";
 import UserList from "./components/UserList.tsx";
 
@@ -16,19 +16,44 @@ interface Message {
   date: Date;
 }
 
+interface User {
+  id: number;
+  name: string;
+}
+
 function App() {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [chat, setChat] = useState<Chat | null>(null);
   const [input, setInput] = useState<(string | number)[]>([0, ""]);
   const [statusMessage, setStatusMessage] = useState<string>("");
 
   useEffect(() => {
-    getUsers().then(setUsers);
-    fetchMessages();
+    async function initApp() {
+      try {
+        const currentChat = await fetchMessages();
+        if (currentChat) {
+          const user1 = await getUser(currentChat.messager1);
+          const user2 = await getUser(currentChat.messager2);
+
+          setUsers([user1, user2]);
+        }
+      } catch (error) {
+        console.error("Initialization error:", error);
+      }
+    }
+
+    initApp();
   }, []);
 
-  function fetchMessages() {
-    getChat(0, "desc").then(setChat);
+  async function fetchMessages(): Promise<Chat | null> {
+    try {
+      const chatData = await getChat(0, "desc");
+      setChat(chatData);
+      return chatData;
+    } catch (error) {
+      console.error("Failed to fetch chat:", error);
+      return null;
+    }
   }
 
   async function sendMessage(
@@ -55,16 +80,22 @@ function App() {
     return res.ok;
   }
 
-  if (!chat) return null;
+  if (!chat) return <div>Ładowanie czatu...</div>;
+
+  const user1Obj = users.find((u) => u.id === chat.messager1);
+  const user2Obj = users.find((u) => u.id === chat.messager2);
+
+  const user1Name = user1Obj ? user1Obj.name : `ID ${chat.messager1}`;
+  const user2Name = user2Obj ? user2Obj.name : `ID ${chat.messager2}`;
+
   return (
     <div>
-      <NewUser />
       <UserList users={users} />
 
       <div>
         <input
           type="text"
-          placeholder={`Chat as ${chat.messager1}...`}
+          placeholder={`Chat as ${user1Name}...`}
           value={input[chat.messager1] || ""}
           onChange={(e) => {
             setInput((prev) => ({
@@ -85,7 +116,7 @@ function App() {
         />
         <input
           type="text"
-          placeholder={`Chat as ${chat.messager2}...`}
+          placeholder={`Chat as ${user2Name}...`}
           value={input[chat.messager2] || ""}
           onChange={(e) => {
             setInput((prev) => ({
@@ -109,12 +140,19 @@ function App() {
           Chat of: {chat.messager1} and {chat.messager2}:
         </p>
         <ul>
-          {chat.messages.map((message: Message, msgindex) => (
-            <li key={msgindex}>
-              {message.sender} sent on {new Date(message.date).toDateString()}:{" "}
-              {message.content}
-            </li>
-          ))}
+          {chat.messages.map((message: Message, msgindex) => {
+            const senderObj = users.find((u) => u.id === message.sender);
+            const senderName = senderObj
+              ? senderObj.name
+              : `Użytkownik ${message.sender}`;
+
+            return (
+              <li key={msgindex}>
+                <strong>{senderName}</strong> sent on{" "}
+                {new Date(message.date).toDateString()}: {message.content}
+              </li>
+            );
+          })}
         </ul>
       </div>
     </div>
