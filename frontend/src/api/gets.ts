@@ -3,7 +3,7 @@ export async function getUsers() {
   return res.json();
 }
 
-export async function getMessages(chatId: number, sort: string = "") {
+export async function getChat(chatId: number, sort: string = "") {
   const res = await fetch(`/api/chats?chatId=${chatId}&sort=${sort}`);
   return res.json();
 }
