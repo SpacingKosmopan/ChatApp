@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { getUsers, getChat, getUser } from "./api/gets.ts";
-import NewUser from "./components/NewUser.tsx";
+import { getChat, getUser } from "./api/gets.ts";
 import UserList from "./components/UserList.tsx";
 
 interface Chat {
