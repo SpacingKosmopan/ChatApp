@@ -1,7 +1,7 @@
 import { AppState } from "./lib/AppState.tsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ChatPanel from "./components/ChatPanel";
-import LoginPanel from "./components/LoginPanel";
+import LoginPanel, { getLoggedUser } from "./components/LoginPanel";
 import "./App.css";
 
 function App() {

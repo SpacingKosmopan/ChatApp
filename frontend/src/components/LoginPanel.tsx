@@ -2,6 +2,11 @@ import { useState, useEffect } from "react";
 import { getUsers, getUser } from "../api/gets.ts";
 import type { User } from "../lib/Interfaces";
 
+const [loggedUser, setLoggedUser] = useState<User | null>(null);
+export function getLoggedUser() {
+  return loggedUser;
+}
+
 export default function LoginPanel() {
   const [users, setUsers] = useState<User[]>([]);
   const [message, setMessage] = useState<string>("");
